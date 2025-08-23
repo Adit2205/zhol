@@ -5,9 +5,11 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.99"
+dynasmrt = "3.2.1"
 parking_lot = "0.12.4"
 windows = { version = "0.58.0", features = ["Win32", "Win32_System", "Win32_System_Diagnostics_ToolHelp", "Win32_System_ProcessStatus", "Win32_System_Threading", "Win32_System_Memory", "Win32_System_Diagnostics", "Win32_System_Diagnostics_Debug"] }
 
 [lib]
 name = "zhol"
 path = "src/lib.rs"
+features = ["async"]
