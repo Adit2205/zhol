@@ -1,6 +1,6 @@
 # Zhol
 
-A Rust library for Windows process manipulation, memory operations, and function hooking.
+A rust library for ergonomic Windows process memory manipulation.
 
 ## Features
 
