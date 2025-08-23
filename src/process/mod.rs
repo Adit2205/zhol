@@ -1,7 +1,7 @@
 // pub mod handle;
 // pub mod input;
 pub mod module;
-// pub mod pattern;
+pub mod pattern;
 // pub mod utils;
 
 /// A macro for safely acquiring and using a handle with timeout support.
