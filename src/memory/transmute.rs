@@ -13,12 +13,18 @@ pub trait ZholTyped<T>: Transmutable<T> + bytemuck::Pod {}
 
 /// Trait for custom "to/from bytes" methods.
 pub trait Transmutable<T> {
+    /// For custom implementations where in-memory types need more steps to convert to a hard data type.
+    /// 
+    /// For instance, this can be used to read memory to get hard data out of a shared pointer.
     fn transmute_from(
         bytes: &Vec<u8>,
         _hook: &ZholHook,
         _context: &MemOpContext,
     ) -> anyhow::Result<Option<T>>;
 
+    /// For custom implmentations where hard data types need extra steps to convert to their byte representation.
+    /// 
+    /// This is not needed in cases where the type follows the C memory layout.
     fn byte_repr(&self, _hook: &ZholHook, _context: &MemOpContext) -> anyhow::Result<Vec<u8>>;
 }
 
