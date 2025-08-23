@@ -107,18 +107,18 @@ pub fn read<T: crate::memory::transmute::ZholTyped<T>>(hook: &crate::hooks::Zhol
 ///
 /// Use this for writing types directly to memory.
 /// Value must implement bytemuck::Pod.
-pub fn write<T: ZholTyped<T>>(
-    hook: &ZholHook,
+pub fn write<T: crate::memory::transmute::ZholTyped<T>>(
+    hook: &crate::hooks::ZholHook,
     value: T,
     context: &MemOpContext,
 ) -> MemOpResult<()> {
     let data = hook.data().read();
     let ptr: usize = match context.at_pointer {
-        true => read_value::<i32>(&hook, data.var_mem.addr, context.timeout)? as usize,
+        true => crate::memory::read::read_value::<i32>(&hook, data.var_mem.addr, context.timeout)? as usize,
         false => data.var_mem.addr,
     };
 
     drop(data);
 
-    write_value::<T>(&hook, ptr + context.offset, value, context.timeout)
+    crate::memory::write::write_value::<T>(&hook, ptr + context.offset, value, context.timeout)
 }
