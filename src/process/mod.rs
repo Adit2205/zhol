@@ -1,6 +1,6 @@
 // pub mod handle;
 // pub mod input;
-// pub mod module;
+pub mod module;
 // pub mod pattern;
 // pub mod utils;
 
@@ -28,7 +28,8 @@
 /// let handle = SafeHandle::new(some_windows_handle);
 /// let result = with_handle!(&handle, Some(Duration::from_secs(5)), |guard| -> windows::Win32::Foundation::HANDLE, {
 ///     // Use the handle through guard
-///     Ok(*guard)
+///     do_something_with_handle(*guard)?;
+///     Ok()
 /// });
 /// ```
 #[macro_export]
