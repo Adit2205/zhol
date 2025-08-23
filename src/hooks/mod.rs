@@ -1,3 +1,6 @@
+#[cfg(feature = "async")]
+pub mod async_ext;
+
 use crate::asm::{handle_x86_asm_build, newmem_jmp};
 use crate::memory::utils::allocate_memory;
 

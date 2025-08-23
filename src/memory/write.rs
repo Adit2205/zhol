@@ -1,7 +1,6 @@
 use crate::error::IntoMemOpResult;
 // use crate::hooks::hook::HookOps;
 use crate::hooks::ZholHook;
-use crate::memory::read::read_value;
 use crate::memory::utils::{change_memory_protection, wait_for_safe_mem};
 use crate::process::SafeHandle;
 use crate::{with_handle, MemOpResult};
@@ -16,6 +15,7 @@ use windows::Win32::System::Memory::PAGE_EXECUTE_READWRITE;
 use super::transmute::ZholTyped;
 use super::MemOpContext;
 
+/// Writes a given byte slice to an address in process memory.
 pub fn write_bytes(
     handle: &SafeHandle,
     addr: usize,
@@ -57,6 +57,7 @@ pub fn write_bytes(
     Ok(())
 }
 
+/// Transmutes a value to a byte slice and writes it to a given address in process memory.
 pub fn write_value<T: ZholTyped<T>>(
     hook: &ZholHook,
     address: usize,
@@ -73,24 +74,4 @@ pub fn write_value<T: ZholTyped<T>>(
     write_bytes(&hook.handle(), address, &bytes.to_vec(), timeout)?;
 
     Ok(())
-}
-
-/// Top-level write function.
-///
-/// Use this for writing types directly to game memory.
-/// Value must implement bytemuck::Pod.
-pub fn write<T: ZholTyped<T>>(
-    hook: &ZholHook,
-    value: T,
-    context: &MemOpContext,
-) -> MemOpResult<()> {
-    let data = hook.data().read();
-    let ptr: usize = match context.at_pointer {
-        true => read_value::<i32>(&hook, data.var_mem.addr, context.timeout)? as usize,
-        false => data.var_mem.addr,
-    };
-
-    drop(data);
-
-    write_value::<T>(&hook, ptr + context.offset, value, context.timeout)
 }

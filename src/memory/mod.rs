@@ -1,6 +1,5 @@
-// #[cfg(feature = "async")]
-// pub mod async_ext;
-// pub mod objects;
+#[cfg(feature = "async")]
+pub mod async_ext;
 pub mod read;
 pub mod transmute;
 pub mod utils;
@@ -85,4 +84,41 @@ impl MemOpContext {
             timeout,
         }
     }
+}
+
+
+/// Top-level read function.
+///
+/// Use this for reading values directly out of memory.
+/// Value must implement bytemuck::Pod.
+pub fn read<T: crate::memory::transmute::ZholTyped<T>>(hook: &crate::hooks::ZholHook, context: &MemOpContext) -> MemOpResult<T> {
+    let data = hook.data().read();
+    let ptr: usize = match context.at_pointer {
+        true => crate::memory::read::read_value::<i32>(&hook, data.var_mem.addr, context.timeout)? as usize,
+        false => data.var_mem.addr,
+    };
+    drop(data);
+
+    crate::memory::read::read_value::<T>(&hook, ptr + context.offset, context.timeout)
+}
+
+
+/// Top-level write function.
+///
+/// Use this for writing types directly to memory.
+/// Value must implement bytemuck::Pod.
+pub fn write<T: crate::memory::transmute::ZholTyped<T>>(
+    hook: &crate::hooks::ZholHook,
+    value: T,
+    context: &MemOpContext,
+) -> MemOpResult<()> {
+    let data = hook.data().read();
+    let ptr: usize = match context.at_pointer {
+        true => crate::memory::read::read_value::<i32>(&hook, data.var_mem.addr, context.timeout)? as usize,
+        false => data.var_mem.addr,
+    };
+
+    drop(data);
+
+    crate::memory::write::write_value::<T>(&hook, ptr + context.offset, value, context.timeout)
 }

@@ -1,3 +1,5 @@
+#[cfg(feature = "async")]
+pub mod async_ext;
 pub mod asm;
 pub mod hooks;
 pub mod memory;

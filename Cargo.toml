@@ -3,11 +3,16 @@ name = "zhol"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+async = ["smol"]
+default = ["async"]
+
 [dependencies]
 anyhow = "1.0.99"
 bytemuck = { version = "1.23.2", features = ["derive"] }
 dynasmrt = "3.2.1"
 parking_lot = "0.12.4"
+smol = { version = "2.0.2", optional = true }
 windows = { version = "0.58.0", features = ["Win32", "Win32_System", "Win32_System_Diagnostics_ToolHelp", "Win32_System_ProcessStatus", "Win32_System_Threading", "Win32_System_Memory", "Win32_System_Diagnostics", "Win32_System_Diagnostics_Debug"] }
 windows-result = "0.3.4"
 
