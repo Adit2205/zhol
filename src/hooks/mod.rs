@@ -1,8 +1,3 @@
-#[cfg(feature = "async")]
-pub mod async_ext;
-
-pub type ZholHook = std::sync::Arc<dyn HookOps>;
-
 use crate::asm::{handle_x86_asm_build, newmem_jmp};
 use crate::memory::utils::allocate_memory;
 
@@ -19,6 +14,9 @@ use std::time::Duration;
 
 use windows::Win32::System::{Memory::PAGE_READWRITE, ProcessStatus::MODULEINFO};
 
+pub type ZholHook = std::sync::Arc<dyn HookOps>;
+
+/// Copies clone implementation for hooking to be used with discrete process memory hooks.
 #[macro_export]
 macro_rules! impl_hook_clone {
     ($type:ty) => {
@@ -36,6 +34,10 @@ macro_rules! impl_hook_clone {
     };
 }
 
+
+/// Top-level structure for a process memory hook.
+/// 
+/// Runtime data is separated from compile-time, which is separated from implementation.
 #[derive(Clone)]
 pub struct Hook {
     pub handle: SafeHandle,
@@ -94,6 +96,9 @@ impl Hook {
 unsafe impl Send for Hook {}
 unsafe impl Sync for Hook {}
 
+/// Hook-agnostic operations so the hook can be meaningfully interacted with in top-level logic.
+/// 
+/// Provides common functionality like hooking, unhooking, and inner specification retreival.
 pub trait HookOps: Send + Sync {
     fn handle(&self) -> SafeHandle;
     fn data(&self) -> &std::sync::Arc<parking_lot::RwLock<HookData>>;
@@ -226,7 +231,9 @@ impl HookOps for Hook {
     }
 }
 
-// Create a type-erased struct to hold the runtime data from Hook
+/// The runtime data for a process memory hook.
+/// 
+/// Modeled after Cheat Engine to provide parity with common exploit enumeration tools.
 #[derive(Clone)]
 pub struct HookData {
     // pub handle: SafeHandle,
@@ -263,6 +270,7 @@ impl HookData {
     }
 }
 
+/// Defines the complile-time behavior of a process memory hook.
 pub trait HookImpl: Send + Sync + CloneHookImpl {
     fn pattern(&self) -> &'static [Byte];
 

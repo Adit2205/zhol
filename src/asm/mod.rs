@@ -37,6 +37,7 @@ pub fn calc_rel_inst(
     (dest as i32) - (origin as i32 + (ops.offset().0 as i32 - 1) + inst_size as i32)
 }
 
+/// Fills a given remaining space of an assembly instruction builder with nops.
 fn apply_nops(
     ops: &mut Assembler<X86Relocation>,
     iterations: usize,

@@ -3,6 +3,5 @@ pub mod hooks;
 pub mod memory;
 pub mod process;
 pub mod error;
-pub mod tools;
 
 pub use error::{MemOpError, MemOpResult, MemOpResultExt};

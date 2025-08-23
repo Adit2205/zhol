@@ -1,5 +1,5 @@
-#[cfg(feature = "async")]
-pub mod async_ext;
+// #[cfg(feature = "async")]
+// pub mod async_ext;
 // pub mod objects;
 pub mod read;
 pub mod transmute;
@@ -17,10 +17,6 @@ use std::time::Duration;
 
 use windows::Win32::System::Diagnostics::Debug::WriteProcessMemory;
 use windows::Win32::System::Memory::{VirtualFree, MEM_RELEASE};
-
-use bytemuck::{Pod, Zeroable};
-
-use transmute::AutoImplTransmutable;
 
 pub type Byte = Option<u8>;
 
